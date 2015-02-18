@@ -1,0 +1,32 @@
+gpart create -s gpt mfid0
+gpart add -s 512K -t freebsd-boot -l gptboot  mfid0
+gpart add -a 1M -s 10G -t freebsd-ufs  -l gptroot mfid0
+gpart add -a 1M -s 10G -t freebsd-swap -l gptswap mfid0
+gpart add -a 1M -s 10G -t freebsd-ufs  -l gpttmp  mfid0
+gpart add -a 1M -s 400G  -t freebsd-ufs  -l gptvar  mfid0
+gpart add -a 1M -t freebsd-ufs  -l gptusr  mfid0
+
+gpart bootcode -b /boot/pmbr mfid0
+gpart bootcode -p /boot/gptboot -i 1 mfid0
+
+newfs -U /dev/gpt/gptroot
+newfs -U /dev/gpt/gpttmp
+newfs -U /dev/gpt/gptvar
+newfs -U /dev/gpt/gptusr
+
+vi /tmp/bsdinstall_etc/fstab
+
+# Device			Mountpoint	FStype	Options	Dump	Pass#
+/dev/gpt/gptroot	/           ufs		rw		1		1
+/dev/gpt/gptswap	none		swap	sw		0		0
+/dev/gpt/gpttmp		/tmp		ufs		rw		2		2
+/dev/gpt/gptvar		/var		ufs		rw		2		2
+/dev/gpt/gptusr		/usr		ufs		rw		2		2
+
+mount /dev/gpt/gtproot /mnt/
+mkdir /mnt/tmp
+mkdir /mnt/var
+mkdir /mnt/usr
+mount /dev/gpt/gpttmp /mnt/tmp
+mount /dev/gpt/gptvar /mnt/var
+mount /dev/gpt/gptusr /mnt/usr
