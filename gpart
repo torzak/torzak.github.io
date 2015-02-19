@@ -23,7 +23,7 @@ vi /tmp/bsdinstall_etc/fstab
 /dev/gpt/gptvar		/var		ufs		rw		2		2
 /dev/gpt/gptusr		/usr		ufs		rw		2		2
 
-mount /dev/gpt/gtproot /mnt/
+mount /dev/gpt/gptroot /mnt/
 mkdir /mnt/tmp
 mkdir /mnt/var
 mkdir /mnt/usr
